@@ -51,12 +51,15 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
+  let companies;
+
   if (req.query) {
-    const companies = await Company.findBy(req.query);
-  }
-    const compaines = await Company.findAll();
+    companies = await Company.findBy(req.query);
     return res.json({ companies });
-  });
+  }
+  companies = await Company.findAll();
+  return res.json({ companies });
+});
 
 /** GET /[handle]  =>  { company }
  *
