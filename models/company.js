@@ -66,6 +66,26 @@ class Company {
     return companiesRes.rows;
   }
 
+
+    /** Find companies based on search parameters.
+   *
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   * */
+  
+
+     static async findBy() {
+      const companiesRes = await db.query(
+          `SELECT handle,
+                  name,
+                  description,
+                  num_employees AS "numEmployees",
+                  logo_url AS "logoUrl"
+             FROM companies
+             WHERE
+             ORDER BY name`);
+      return companiesRes.rows;
+    }
+
   /** Given a company handle, return data about company.
    *
    * Returns { handle, name, description, numEmployees, logoUrl, jobs }

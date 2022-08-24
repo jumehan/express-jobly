@@ -87,6 +87,29 @@ describe("findAll", function () {
   });
 });
 
+
+/************************************** filter companies */
+
+// describe("findBy", function () {
+//   test("works: filter by numEmployees", async function () {
+//     let companies = await Company.findBy();
+//     expect(companies).toEqual([
+//       {
+//         handle: "c3",
+//         name: "C3",
+//         description: "Desc3",
+//         numEmployees: 3,
+//         logoUrl: "http://c3.img",
+//       },
+//     ]);
+//   });
+// });
+
+
+
+
+
+
 /************************************** get */
 
 describe("get", function () {
