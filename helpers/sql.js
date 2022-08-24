@@ -1,9 +1,9 @@
 const { BadRequestError } = require("../expressError");
 const { SEARCH_FILTERS } = require("../config")
 
-/** takes in two object params
- * dataToUpdate is equal to request.body json object
- * jsToSql is equal to JS key and db table name pair
+/** Helper function that takes in two object params
+ * dataToUpdate = request.body json object {firstName: 'Aliya'}
+ * jsToSql = JS key and db table name pair {firstName: "first_name"}
  * returns obj {setCols: “db colum name + $idx",
  *              values: [array of values to update]}
  */
@@ -33,10 +33,12 @@ function sqlForFiltering(filters) {
   let keys = Object.keys(filters);
   let values = Object.values(filters); //[name, minNum, maxNum]
 
+  //if filter queries are not supported, throw an error
   if (keys.every(e => SEARCH_FILTERS.includes(e)) === false) {
    throw new BadRequestError("invalid search")
   }
 
+  // if minEmployees > maxEmployees, throw an error
   if (filters.minEmployees > filters.maxEmployees) {
     throw new BadRequestError(`minimum employee number must be less
                                than maximum employee number`);
