@@ -74,7 +74,7 @@ class Company {
 
   static async findBy(filters) {
     const { conditions, values } = sqlForFiltering(filters);
-    debugger;
+
     const companiesRes = await db.query(
       `SELECT handle,
                   name,

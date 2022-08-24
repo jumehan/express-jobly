@@ -96,6 +96,22 @@ describe("GET /companies", function () {
     });
   });
 
+  test("find by with a query", async function () {
+    const resp = await request(app).get("/companies?nameLike=C1");
+    expect(resp.body).toEqual({
+      companies:
+          [
+            {
+              handle: "c1",
+              name: "C1",
+              description: "Desc1",
+              numEmployees: 1,
+              logoUrl: "http://c1.img",
+            },
+          ],
+    });
+  });
+
   test("fails: test next() handler", async function () {
     // there's no normal failure event which will cause this route to fail ---
     // thus making it hard to test that the error-handler works with it. This
@@ -107,6 +123,9 @@ describe("GET /companies", function () {
     expect(resp.statusCode).toEqual(500);
   });
 });
+
+
+
 
 /************************************** GET /companies/:handle */
 
