@@ -45,8 +45,9 @@ function sqlForFiltering(filters) {
   }
 
   if (filters.nameLike) {
-    conditions.push('name ILIKE $1');
-    values[0] = `%${filters.nameLike}%`;
+    const index = keys.indexOf("nameLike");
+    values[index] = `%${filters.nameLike}%`;
+    conditions.push(`name ILIKE $${index + 1}`);
   }
 
   if (filters.minEmployees) {
