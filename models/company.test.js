@@ -121,7 +121,7 @@ describe("findBy", function () {
 });
 
 describe("findBy", function () {
-  test("works: filter by min employees", async function () {
+  test("works: filter by max employees", async function () {
     let companies = await Company.findBy({maxEmployees: 3});
     expect(companies).toEqual([
       {

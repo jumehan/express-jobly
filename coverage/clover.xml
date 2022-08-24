@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1661382235404" clover="3.2.0">
-  <project timestamp="1661382235404" name="All files">
+<coverage generated="1661384637924" clover="3.2.0">
+  <project timestamp="1661384637924" name="All files">
     <metrics statements="291" coveredstatements="290" conditionals="78" coveredconditionals="76" methods="53" coveredmethods="52" elements="422" coveredelements="418" complexity="0" loc="291" ncloc="291" packages="5" files="14" classes="14"/>
     <package name="express-jobly">
       <metrics statements="51" coveredstatements="50" conditionals="18" coveredconditionals="16" methods="8" coveredmethods="7"/>
@@ -128,7 +128,7 @@
         <line num="38" count="32" type="cond" truecount="2" falsecount="0"/>
         <line num="39" count="24" type="stmt"/>
         <line num="41" count="8" type="stmt"/>
-        <line num="46" count="5" type="stmt"/>
+        <line num="57" count="5" type="stmt"/>
       </file>
     </package>
     <package name="express-jobly.models">
