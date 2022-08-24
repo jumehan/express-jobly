@@ -52,12 +52,12 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 
 router.get("/", async function (req, res, next) {
   let companies;
-
-  if (req.query) {
-    companies = await Company.findBy(req.query);
+  debugger
+  if (Object.keys(req.query).length === 0) {
+    companies = await Company.findAll();
     return res.json({ companies });
   }
-  companies = await Company.findAll();
+  companies = await Company.findBy(req.query);
   return res.json({ companies });
 });
 
