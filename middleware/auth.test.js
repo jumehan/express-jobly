@@ -6,6 +6,7 @@ const {
   authenticateJWT,
   ensureLoggedIn,
   isAdmin,
+  isAdminOrUser,
 } = require("./auth");
 
 
@@ -94,10 +95,10 @@ describe("isAdmin", function () {
     isAdmin(req, res, next);
   });
 
-  test("is not admin" , function () {
+  test("is not admin", function () {
     expect.assertions(1);
     const req = {};
-    const res = { locals: { user: { isAdmin: false } }  };
+    const res = { locals: { user: { isAdmin: false } } };
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
     };
@@ -110,7 +111,7 @@ describe("isAdmin", function () {
 describe("isAdminOrUser or user", function () {
   test("works if correct user", async function () {
     expect.assertions(1);
-    const req = {params: { username: "test"}};
+    const req = { params: { username: "test" } };
     const res = { locals: { user: { username: "test", isAdmin: false } } };
     const next = function (err) {
       expect(err).toBeFalsy();
@@ -120,7 +121,7 @@ describe("isAdminOrUser or user", function () {
 
   test("works if admin", async function () {
     expect.assertions(1);
-    const req = {params: { username: "test"}};
+    const req = { params: { username: "test" } };
     const res = { locals: { user: { username: "test2", isAdmin: true } } };
     const next = function (err) {
       expect(err).toBeFalsy();
@@ -130,10 +131,11 @@ describe("isAdminOrUser or user", function () {
 
   test("unauth user does not work", async function () {
     expect.assertions(1);
-    const req = {params: { username: "test"}};
+    const req = { params: { username: "test" } };
     const res = { locals: { user: { username: "test3", isAdmin: false } } };
+
     const next = function (err) {
-      expect(err).toBeFalsy();
+      expect(err instanceof UnauthorizedError).toBeTruthy();
     };
     isAdminOrUser(req, res, next);
   });
