@@ -1,5 +1,4 @@
 const { BadRequestError } = require("../expressError");
-const { SEARCH_FILTERS } = require("../config")
 
 /** Helper function that takes in two object params
  * dataToUpdate = request.body json object {firstName: 'Aliya'}
@@ -22,56 +21,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-/** Helper function that takes in object {filters = req.query}
- * returns obj {conditons, values}
- * conditions is string: "SQL conditional query for WHERE clause"
- * values is array: [conditional values]
-*/
-
-function sqlForFiltering(filters) {
-  let conditions = [];
-  let keys = Object.keys(filters);
-  let values = Object.values(filters); //[name, minNum, maxNum]
-
-  //if filter queries are not supported, throw an error
-  if (keys.every(e => SEARCH_FILTERS.includes(e)) === false) {
-   throw new BadRequestError("invalid search")
-  }
-
-  // if minEmployees > maxEmployees, throw an error
-  if (filters.minEmployees > filters.maxEmployees) {
-    throw new BadRequestError(`minimum employee number must be less
-                               than maximum employee number`);
-  }
-
-  if (filters.nameLike) {
-    const index = keys.indexOf("nameLike");
-    values[index] = `%${filters.nameLike}%`;
-    conditions.push(`name ILIKE $${index + 1}`);
-  }
-
-  if (filters.minEmployees) {
-    conditions.push(`num_employees >= $${keys.indexOf("minEmployees") + 1}`);
-  }
-
-  if (filters.maxEmployees) {
-    conditions.push(`num_employees <= $${keys.indexOf("maxEmployees") + 1}`);
-  }
-
-  if (conditions.length > 1) {
-    conditions = conditions.join(" AND ");
-  } else {
-    conditions = conditions.toString();
-  }
-
-  return {
-    conditions,
-    values
-  };
-}
-
 
 module.exports = {
   sqlForPartialUpdate,
-  sqlForFiltering
 };

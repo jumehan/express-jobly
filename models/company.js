@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForFiltering } = require("../helpers/sql");
+const { sqlForPartialUpdate } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -50,40 +50,28 @@ class Company {
   }
 
   /** Find all companies.
+   * allows filtering
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll() {
-    const companiesRes = await db.query(
-      `SELECT handle,
-                name,
-                description,
-                num_employees AS "numEmployees",
-                logo_url AS "logoUrl"
-           FROM companies
-           ORDER BY name`);
-    return companiesRes.rows;
-  }
-
-
-  /** Find companies based on search parameters.
- *
- * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
- * */
-
-  static async findBy(filters) {
-    const { conditions, values } = sqlForFiltering(filters);
+  static async findAll(filters) {
+    debugger;
+    let { conditions, values } = Company._sqlForFilteringCompanies(filters);
+    if (conditions.length < 1) conditions = "";
+    else {
+      conditions = `WHERE ${conditions}`;
+    }
 
     const companiesRes = await db.query(
       `SELECT handle,
-                  name,
-                  description,
-                  num_employees AS "numEmployees",
-                  logo_url AS "logoUrl"
-             FROM companies
-             WHERE ${conditions}
-             ORDER BY name`,
+              name,
+              description,
+              num_employees AS "numEmployees",
+              logo_url AS "logoUrl"
+          FROM companies
+          ${conditions}
+          ORDER BY name`,
       [...values]);
     return companiesRes.rows;
   }
@@ -163,6 +151,49 @@ class Company {
     const company = result.rows[0];
 
     if (!company) throw new NotFoundError(`No company: ${handle}`);
+  }
+
+  /** Helper function that takes in object {filters = req.query}
+ * returns obj {conditons, values}
+ * conditions is string: "SQL conditional query for WHERE clause"
+ * values is array: [conditional values]
+*/
+
+  static _sqlForFilteringCompanies(filters) {
+    let conditions = [];
+    let values = [];
+    let idx = 0;
+
+    if (filters.minEmployees > filters.maxEmployees) {
+      throw new BadRequestError(`minimum employee number must be less
+                               than maximum employee number`);
+    }
+
+    if (filters.nameLike) {
+      values[idx] = `%${filters.nameLike}%`;
+      conditions[idx] = `name ILIKE $${idx + 1}`;
+      idx++;
+    }
+
+    if (filters.minEmployees) {
+      values[idx] = `${filters.minEmployees}`;
+      conditions[idx] = `num_employees >= $${idx + 1}`;
+      idx++;
+    }
+
+    if (filters.maxEmployees) {
+      values[idx] = `${filters.maxEmployees}`;
+      conditions[idx] = `num_employees <= $${idx + 1}`;
+      idx++;
+    }
+
+    conditions = conditions.length > 1 ? conditions.join(" AND ") :
+      conditions.toString();
+
+    return {
+      conditions,
+      values
+    };
   }
 }
 
