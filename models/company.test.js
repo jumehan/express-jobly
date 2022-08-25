@@ -167,7 +167,7 @@ describe("_sqlForFilteringCompanies", function () {
   test("out of bound search terms", function () {
     const searchObj = { logo: "burton" };
     try {
-      const results = Company._sqlForFilteringCompanies(searchObj);
+      Company._sqlForFilteringCompanies(searchObj);
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
     };
@@ -179,7 +179,7 @@ describe("_sqlForFilteringCompanies", function () {
       maxEmployees: 400
     };
     try {
-      const results = Company._sqlForFilteringCompanies(searchObj);
+      Company._sqlForFilteringCompanies(searchObj);
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
     };

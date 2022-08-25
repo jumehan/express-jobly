@@ -95,7 +95,7 @@ describe("isAdmin", function () {
     isAdmin(req, res, next);
   });
 
-  test("is not admin", function () {
+  test("user is not admin", function () {
     expect.assertions(1);
     const req = {};
     const res = { locals: { user: { isAdmin: false } } };
@@ -104,8 +104,17 @@ describe("isAdmin", function () {
     };
     isAdmin(req, res, next);
   });
-});
 
+  test("anon is not admin", function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: {} };
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    isAdmin(req, res, next);
+  });
+});
 /************************************** check is admin or user */
 
 describe("isAdminOrUser or user", function () {
@@ -133,6 +142,17 @@ describe("isAdminOrUser or user", function () {
     expect.assertions(1);
     const req = { params: { username: "test" } };
     const res = { locals: { user: { username: "test3", isAdmin: false } } };
+
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    isAdminOrUser(req, res, next);
+  });
+
+  test("unauth anon does not work", async function () {
+    expect.assertions(1);
+    const req = { params: { username: "test" } };
+    const res = { locals: {} };
 
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();

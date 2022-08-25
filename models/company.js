@@ -56,7 +56,7 @@ class Company {
    * */
 
   static async findAll(filters) {
-    debugger;
+    
     let { conditions, values } = Company._sqlForFilteringCompanies(filters);
     if (conditions.length < 1) conditions = "";
     else {

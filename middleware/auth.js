@@ -58,11 +58,13 @@ function isAdmin(req, res, next) {
  * else raise 401*/
 
 function isAdminOrUser(req, res, next) {
-  const u = res.locals.user;
+  const user = res.locals.user;
   const username = req.params.username;
   try {
-    if (!u) throw new UnauthorizedError();
-    if (!u.isAdmin && username !== u.username) throw new UnauthorizedError();
+    if (!user ||
+      (!user.isAdmin && username !== user.username)) {
+      throw new UnauthorizedError();
+    }
     return next();
   } catch (err) {
     return next(err);
