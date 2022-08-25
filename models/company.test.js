@@ -60,7 +60,7 @@ describe("create", function () {
 
 describe("findAll", function () {
   test("works: no filter", async function () {
-    let companies = await Company.findAll();
+    let companies = await Company.findAll({});
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -90,9 +90,9 @@ describe("findAll", function () {
 
 /************************************** filter companies */
 
-describe("findBy", function () {
+describe("findAll", function () {
   test("works: filter by nameLike", async function () {
-    let companies = await Company.findBy({nameLike: "C3"});
+    let companies = await Company.findAll({nameLike: "C3"});
     expect(companies).toEqual([
       {
         handle: "c3",
@@ -105,9 +105,9 @@ describe("findBy", function () {
   });
 });
 
-describe("findBy", function () {
+describe("findAll", function () {
   test("works: filter by min employees", async function () {
-    let companies = await Company.findBy({minEmployees: 3});
+    let companies = await Company.findAll({minEmployees: 3});
     expect(companies).toEqual([
       {
         handle: "c3",
@@ -120,9 +120,9 @@ describe("findBy", function () {
   });
 });
 
-describe("findBy", function () {
+describe("findAll", function () {
   test("works: filter by max employees", async function () {
-    let companies = await Company.findBy({maxEmployees: 3});
+    let companies = await Company.findAll({maxEmployees: 3});
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -148,6 +148,45 @@ describe("findBy", function () {
     ]);
   });
 });
+
+
+describe("_sqlForFilteringCompanies", function () {
+  test("correct search", function () {
+    const searchObj = {
+      nameLike: "burton",
+      minEmployees: 400,
+      maxEmployees: 900
+    };
+    const results = Company._sqlForFilteringCompanies(searchObj);
+    expect(results).toEqual({
+      conditions: 'name ILIKE $1 AND num_employees >= $2 AND num_employees <= $3',
+      values: ['%burton%', "400", "900"]
+    });
+  });
+
+  test("out of bound search terms", function () {
+    const searchObj = { logo: "burton" };
+    try {
+      const results = Company._sqlForFilteringCompanies(searchObj);
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    };
+  });
+
+  test("out of bound search terms", function () {
+    const searchObj = {
+      minEmployees: 900,
+      maxEmployees: 400
+    };
+    try {
+      const results = Company._sqlForFilteringCompanies(searchObj);
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    };
+  });
+
+})
+
 
 
 
