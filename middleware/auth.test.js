@@ -11,7 +11,9 @@ const {
 
 const { SECRET_KEY } = require("../config");
 const testJwt = jwt.sign({ username: "test", isAdmin: false }, SECRET_KEY);
+const test2Jwt = jwt.sign({ username: "test2", isAdmin: true }, SECRET_KEY);
 const badJwt = jwt.sign({ username: "test", isAdmin: false }, "wrong");
+
 
 
 describe("authenticateJWT", function () {
@@ -102,3 +104,40 @@ describe("isAdmin", function () {
     isAdmin(req, res, next);
   });
 });
+
+/************************************** check is admin or user */
+
+describe("isAdminOrUser or user", function () {
+  test("works if correct user", async function () {
+    expect.assertions(1);
+    const req = {params: { username: "test"}};
+    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    const next = function (err) {
+      expect(err).toBeFalsy();
+    };
+    isAdminOrUser(req, res, next);
+  });
+
+  test("works if admin", async function () {
+    expect.assertions(1);
+    const req = {params: { username: "test"}};
+    const res = { locals: { user: { username: "test2", isAdmin: true } } };
+    const next = function (err) {
+      expect(err).toBeFalsy();
+    };
+    isAdminOrUser(req, res, next);
+  });
+
+  test("unauth user does not work", async function () {
+    expect.assertions(1);
+    const req = {params: { username: "test"}};
+    const res = { locals: { user: { username: "test3", isAdmin: false } } };
+    const next = function (err) {
+      expect(err).toBeFalsy();
+    };
+    isAdminOrUser(req, res, next);
+  });
+
+});
+
+

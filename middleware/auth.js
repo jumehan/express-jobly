@@ -54,9 +54,14 @@ function isAdmin(req, res, next) {
   }
 }
 
+// function isAdminOrUser(){
+
+
+// }
 
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   isAdmin,
+
 };
