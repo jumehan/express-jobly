@@ -5,6 +5,7 @@ const { UnauthorizedError } = require("../expressError");
 const {
   authenticateJWT,
   ensureLoggedIn,
+  isAdmin,
 } = require("./auth");
 
 
@@ -80,19 +81,24 @@ describe("ensureLoggedIn", function () {
 
 /************************************** check is admin  */
 
-describe("POST /auth/register", function () {
-  test("works for anon", async function () {
-    const resp = await request(app)
-        .post("/auth/register")
-        .send({
-          username: "new",
-          firstName: "first",
-          lastName: "last",
-          password: "password",
-          email: "new@email.com",
-        });
-    expect(resp.statusCode).toEqual(201);
-    expect(resp.body).toEqual({
-      "token": expect.any(String),
-    });
+describe("isAdmin", function () {
+  test("works if user is admin", async function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { isAdmin: true } } };
+    const next = function (err) {
+      expect(err).toBeFalsy();
+    };
+    isAdmin(req, res, next);
   });
+
+  test("is not admin" , function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { isAdmin: false } }  };
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    isAdmin(req, res, next);
+  });
+});
