@@ -173,14 +173,15 @@ describe("findAll", function () {
 
 describe("get", function () {
   test("works", async function () {
-    const result = await db.query(`SELECT id,
+    const result = await db.query(`SELECT id
                             FROM jobs
-                            WHERE title = j1`);
+                            WHERE title = 'j1'`);
     const id = result.rows[0].id;
     let jobs = await Job.get(id);
     expect(jobs).toEqual({
+      id: id,
       title: "j1",
-      salary: "100",
+      salary: 100,
       equity: "0.01",
       company_handle: "c1"
     });
@@ -203,7 +204,7 @@ describe("get", function () {
 describe("update", function () {
   const updateData = {
     title: "j4",
-    salary: "400",
+    salary: 400,
     equity: "0.04",
   };
 
@@ -216,7 +217,7 @@ describe("update", function () {
     expect(job).toEqual({
       id: id,
       title: "j4",
-      salary: "400",
+      salary: 400,
       equity: "0.04",
       company_handle: "c1",
     });
@@ -228,7 +229,7 @@ describe("update", function () {
     expect(jResult.rows).toEqual({
       id: id,
       title: "j4",
-      salary: "400",
+      salary: 400,
       equity: "0.04",
       company_handle: "c1",
     });
