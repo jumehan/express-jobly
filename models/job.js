@@ -70,15 +70,20 @@ class Job {
     return jobResults.rows;
   }
 
+
+  /** Creates SQL queries for filtering jobs with obj {filters} input
+   *
+   * returns condition = SQL query strings `title ILIKE $1...`
+   * and values = array of values to sanitize query params [...values]
+  */
   static _sqlForFilteringJobs(filters) {
     let conditions = [];
     let values = [];
-    let idx = values.length
+    let idx = values.length;
 
     if (filters.title) {
       values[idx] = `%${filters.title}%`;
       conditions[idx] = `title ILIKE $${idx + 1}`;
-
     }
 
     if (filters.minSalary) {
