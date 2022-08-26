@@ -4,37 +4,39 @@ const db = require("../db.js");
 const User = require("../models/user");
 const Company = require("../models/company");
 const { createToken } = require("../helpers/tokens");
+const Job = require("../models/job.js");
 
 async function commonBeforeAll() {
+  await db.query("DELETE FROM jobs");
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM users");
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM companies");
 
   await Company.create(
-      {
-        handle: "c1",
-        name: "C1",
-        numEmployees: 1,
-        description: "Desc1",
-        logoUrl: "http://c1.img",
-      });
+    {
+      handle: "c1",
+      name: "C1",
+      numEmployees: 1,
+      description: "Desc1",
+      logoUrl: "http://c1.img",
+    });
   await Company.create(
-      {
-        handle: "c2",
-        name: "C2",
-        numEmployees: 2,
-        description: "Desc2",
-        logoUrl: "http://c2.img",
-      });
+    {
+      handle: "c2",
+      name: "C2",
+      numEmployees: 2,
+      description: "Desc2",
+      logoUrl: "http://c2.img",
+    });
   await Company.create(
-      {
-        handle: "c3",
-        name: "C3",
-        numEmployees: 3,
-        description: "Desc3",
-        logoUrl: "http://c3.img",
-      });
+    {
+      handle: "c3",
+      name: "C3",
+      numEmployees: 3,
+      description: "Desc3",
+      logoUrl: "http://c3.img",
+    });
 
   await User.register({
     username: "u1",
@@ -60,7 +62,26 @@ async function commonBeforeAll() {
     password: "password3",
     isAdmin: false,
   });
+  await Job.create({
+    title: "j1",
+    salary: 100,
+    equity: 0.01,
+    company_handle: "c1"
+  });
+  await Job.create({
+    title: "j2",
+    salary: 200,
+    equity: 0,
+    company_handle: "c2"
+  });
+  await Job.create({
+    title: "j3",
+    salary: 100,
+    equity: undefined,
+    company_handle: "c3"
+  });
 }
+
 
 async function commonBeforeEach() {
   await db.query("BEGIN");
